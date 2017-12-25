@@ -1,4 +1,5 @@
 'use strict';
+const {inspect} = require('util');
 const indentString = require('indent-string');
 const cleanStack = require('clean-stack');
 
@@ -25,6 +26,10 @@ class AggregateError extends Error {
 		for (const error of this._errors) {
 			yield error;
 		}
+	}
+
+	[inspect.custom](depth, options) {
+		return this.name + ' ' + inspect(this._errors, {...options, depth: options.depth === null ? null : options.depth - 1}).replace(/^\[/, '{\n').replace(/\]$/, '}');
 	}
 }
 
